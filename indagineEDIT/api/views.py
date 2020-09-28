@@ -7,7 +7,7 @@ from django.db.models import Sum
 
 
 class DataView(viewsets.ModelViewSet):
-	queryset = Data.objects.all()[:10000]
+	queryset = Data.objects.all()[:5000]
 	serializer_class = DataSerializer
 	http_method_names = ['get']
 
