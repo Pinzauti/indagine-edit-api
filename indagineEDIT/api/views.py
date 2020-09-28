@@ -27,7 +27,7 @@ class AlcoholView(APIView):
 		notDrunkAccidents = Data.objects.filter(GUIDA_UBRIACO="No", ALMENO_1_INCIDENTE="Si").count()
 		notDrunk = Data.objects.filter(GUIDA_UBRIACO="No", ALMENO_1_INCIDENTE="No").count()
 		content = {'name': 'Guidato ubriaco', 'Hanno avuto incidenti': drunkAccidents,
-		           'Mai avuto incidenti': drunk}, {'name': 'Mai guidato ubriaco',
+		           'Mai avuto incidenti': drunk}, {'name': 'Mai fatto',
 		                                           'Hanno avuto incidenti': notDrunkAccidents,
 		                                           'Mai avuto incidenti': notDrunk}
 		return Response(content)
@@ -39,8 +39,8 @@ class DrugsView(APIView):
 		doped = Data.objects.filter(GUIDA_DOPO_DROGA="Si", ALMENO_1_INCIDENTE="No").count()
 		notDopedAccidents = Data.objects.filter(GUIDA_DOPO_DROGA="No", ALMENO_1_INCIDENTE="Si").count()
 		notDoped = Data.objects.filter(GUIDA_DOPO_DROGA="No", ALMENO_1_INCIDENTE="No").count()
-		content = {'name': 'Guidato da drogato', 'Hanno avuto incidenti': dopedAccidents,
-		           'Mai avuto incidenti': doped}, {'name': 'Mai guidato da drogato',
+		content = {'name': 'Guidato drogato', 'Hanno avuto incidenti': dopedAccidents,
+		           'Mai avuto incidenti': doped}, {'name': 'Mai fatto',
 		                                           'Hanno avuto incidenti': notDopedAccidents,
 		                                           'Mai avuto incidenti': notDoped}
 		return Response(content)
