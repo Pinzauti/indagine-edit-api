@@ -7,7 +7,7 @@ from django.db.models import Sum
 
 
 class DataView(viewsets.ModelViewSet):
-	queryset = Data.objects.all()[:6000] #a causa del piano free di heroku, limite eliminabile in locale
+	queryset = Data.objects.all() #a causa del piano free di heroku, limite eliminabile in locale
 	serializer_class = DataSerializer
 	http_method_names = ['get']
 
