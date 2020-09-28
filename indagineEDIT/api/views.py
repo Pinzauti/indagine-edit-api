@@ -59,7 +59,7 @@ class LifeStyleView(APIView):
 		                                                                'fill': '#83a6ed'}, \
 		          {'name': 'No uso preservativo', 'n': condom, 'fill': '#8dd1e1'}, {'name': 'No verdure',
 		                                                                            'n': vegetables, 'fill': '#82ca9d'}, \
-		          {'name': 'No frutta', 'n': fruit, 'fill': '#a4de6c'}, {'name': 'Uso Droghe', 'n': drugs,
+		          {'name': 'No frutta', 'n': fruit, 'fill': '#a4de6c'}, {'name': 'Uso droghe', 'n': drugs,
 		                                                                 'fill': '#d0ed57'}, \
 		          {'name': 'Nessun incidente', 'n': noAccidents, 'fill': '#ffc658'},
 		return Response(content)
