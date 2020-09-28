@@ -138,7 +138,7 @@ class DroveWithDrunkView(APIView):
 		notWithDrunkAccidents = Data.objects.filter(SU_MEZZO_CON_UBRIACO="No", ALMENO_1_INCIDENTE="Si").count()
 		notWithDrunk = Data.objects.filter(SU_MEZZO_CON_UBRIACO="No", ALMENO_1_INCIDENTE="No").count()
 		content = {'name': 'Su mezzo con ubriaco', 'Hanno avuto incidenti': withDrunkAccidents,
-		           'Mai avuto incidenti': withDrunk}, {'name': 'Mai stato su mezzo con ubriaco',
+		           'Mai avuto incidenti': withDrunk}, {'name': 'Mai fatto',
 		                                               'Hanno avuto incidenti': notWithDrunkAccidents,
 		                                               'Mai avuto incidenti': notWithDrunk}
 		return Response(content)
