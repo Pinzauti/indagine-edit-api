@@ -6,17 +6,23 @@ from .serializers import DataSerializer
 from django.db.models import Sum
 
 
+def percentage(number, total):
+	return round(100*number/total,0)
+
+
 class DataView(viewsets.ModelViewSet):
-	queryset = Data.objects.all()[:5000] #a causa del piano free di heroku, limite eliminabile in locale
+	queryset = Data.objects.all()[:2000]  # a causa del piano free di heroku, limite eliminabile in locale
 	serializer_class = DataSerializer
 	http_method_names = ['get']
 
 
 class GenderView(APIView):
 	def get(self, request):
-		male = Data.objects.filter(ALMENO_1_INCIDENTE="Si", GENERE="Maschio").count()
-		female = Data.objects.filter(ALMENO_1_INCIDENTE="Si", GENERE="Femmina").count()
-		content = {'name': 'Maschi', 'value': male}, {'name': 'Femmine', 'value': female}
+		male = Data.objects.filter(GENERE="Maschio").count()
+		female = Data.objects.filter(GENERE="Femmina").count()
+		maleAccidents = Data.objects.filter(ALMENO_1_INCIDENTE="Si", GENERE="Maschio").count()
+		femaleAccidents = Data.objects.filter(ALMENO_1_INCIDENTE="Si", GENERE="Femmina").count()
+		content = {'name': 'Maschi', 'value': percentage(maleAccidents, male)}, {'name': 'Femmine', 'value': percentage(femaleAccidents, female)}
 		return Response(content)
 
 
@@ -55,13 +61,13 @@ class LifeStyleView(APIView):
 		fruit = Data.objects.filter(ALMENO_1_INCIDENTE="No", CONSUMO_FRUTTA="Raramente o mai").count()
 		drugs = Data.objects.filter(ALMENO_1_INCIDENTE="No", SOSTANZE_VITA="Si").count()
 		noAccidents = Data.objects.filter(ALMENO_1_INCIDENTE="No").count()
-		content = {'name': 'No sport', 'n': sport, 'fill': '#8884d8'}, {'name': 'Subito bullismo', 'n': bullied,
+		content = {'name': 'No sport', 'n': percentage(sport, noAccidents),'fill': '#8884d8'}, {'name': 'Subito bullismo', 'n': percentage(bullied,noAccidents),
 		                                                                'fill': '#83a6ed'}, \
-		          {'name': 'No uso preservativo', 'n': condom, 'fill': '#8dd1e1'}, {'name': 'No verdure',
-		                                                                            'n': vegetables, 'fill': '#82ca9d'}, \
-		          {'name': 'No frutta', 'n': fruit, 'fill': '#a4de6c'}, {'name': 'Uso droghe', 'n': drugs,
+		          {'name': 'No uso preservativo', 'n': percentage(condom, noAccidents),'fill': '#8dd1e1'}, {'name': 'No verdure',
+		                                                                            'n': percentage(vegetables, noAccidents),'fill': '#82ca9d'}, \
+		          {'name': 'No frutta', 'n': percentage(fruit,noAccidents), 'fill': '#a4de6c'}, {'name': 'Uso droghe', 'n': percentage(drugs,noAccidents),
 		                                                                 'fill': '#d0ed57'}, \
-		          {'name': 'Nessun incidente', 'n': noAccidents, 'fill': '#ffc658'},
+		          {'name': 'Nessun incidente', 'n': "100", 'fill': '#ffc658'},
 		return Response(content)
 
 
@@ -74,13 +80,13 @@ class AccidentsLifeStyleView(APIView):
 		fruit = Data.objects.filter(ALMENO_1_INCIDENTE="Si", CONSUMO_FRUTTA="Raramente o mai").count()
 		drugs = Data.objects.filter(ALMENO_1_INCIDENTE="Si", SOSTANZE_VITA="Si").count()
 		Accidents = Data.objects.filter(ALMENO_1_INCIDENTE="Si").count()
-		content = {'name': 'No sport', 'n': sport, 'fill': '#8884d8'}, {'name': 'Subito bullismo', 'n': bullied,
+		content = {'name': 'No sport', 'n': percentage(sport, Accidents), 'fill': '#8884d8'}, {'name': 'Subito bullismo', 'n': percentage(bullied,Accidents),
 		                                                                'fill': '#83a6ed'}, \
-		          {'name': 'No uso preservativo', 'n': condom, 'fill': '#8dd1e1'}, {'name': 'No verdure',
-		                                                                            'n': vegetables, 'fill': '#82ca9d'}, \
-		          {'name': 'No frutta', 'n': fruit, 'fill': '#a4de6c'}, {'name': 'Uso droghe', 'n': drugs,
+		          {'name': 'No uso preservativo', 'n': percentage(condom, Accidents),'fill': '#8dd1e1'}, {'name': 'No verdure',
+		                                                                            'n': percentage(vegetables,Accidents), 'fill': '#82ca9d'}, \
+		          {'name': 'No frutta', 'n': percentage(fruit,Accidents), 'fill': '#a4de6c'}, {'name': 'Uso droghe', 'n': percentage(drugs,Accidents),
 		                                                                 'fill': '#d0ed57'}, \
-		          {'name': 'Coinvolti in incidenti', 'n': Accidents, 'fill': '#ffc658'},
+		          {'name': 'Coinvolti in incidenti', 'n': "100", 'fill': '#ffc658'},
 		return Response(content)
 
 
@@ -146,30 +152,26 @@ class DroveWithDrunkView(APIView):
 
 class BMIView(APIView):
 	def get(self, request):
-		underweight1 = Data.objects.filter(ALMENO_1_INCIDENTE="No", BMI_6CLASSI="SOTTOPESO I").count()
+		underweight1 = Data.objects.filter(BMI_6CLASSI="SOTTOPESO I").count()
 		underweight1Accident = Data.objects.filter(ALMENO_1_INCIDENTE="Si", BMI_6CLASSI="SOTTOPESO I").count()
 
-		underweight2 = Data.objects.filter(ALMENO_1_INCIDENTE="No", BMI_6CLASSI="SOTTOPESO II").count()
+		underweight2 = Data.objects.filter(BMI_6CLASSI="SOTTOPESO II").count()
 		underweight2Accident = Data.objects.filter(ALMENO_1_INCIDENTE="Si", BMI_6CLASSI="SOTTOPESO II").count()
 
-		underweight3 = Data.objects.filter(ALMENO_1_INCIDENTE="No", BMI_6CLASSI="SOTTOPESO III").count()
+		underweight3 = Data.objects.filter(BMI_6CLASSI="SOTTOPESO III").count()
 		underweight3Accident = Data.objects.filter(ALMENO_1_INCIDENTE="Si", BMI_6CLASSI="SOTTOPESO III").count()
 
-		normalweight = Data.objects.filter(ALMENO_1_INCIDENTE="No", BMI_6CLASSI="NORMOPESO").count()
+		normalweight = Data.objects.filter(BMI_6CLASSI="NORMOPESO").count()
 		normalweightAccident = Data.objects.filter(ALMENO_1_INCIDENTE="Si", BMI_6CLASSI="NORMOPESO").count()
 
-		overweight = Data.objects.filter(ALMENO_1_INCIDENTE="No", BMI_6CLASSI="SOVRAPPESO").count()
+		overweight = Data.objects.filter(BMI_6CLASSI="SOVRAPPESO").count()
 		overweightAccident = Data.objects.filter(ALMENO_1_INCIDENTE="Si", BMI_6CLASSI="SOVRAPPESO").count()
 
-		obese = Data.objects.filter(ALMENO_1_INCIDENTE="No", BMI_6CLASSI="OBESO").count()
+		obese = Data.objects.filter(BMI_6CLASSI="OBESO").count()
 		obeseAccident = Data.objects.filter(ALMENO_1_INCIDENTE="Si", BMI_6CLASSI="OBESO").count()
 
-		content = {'name': "Sottopeso I", "Nessun incidente": underweight1, "Incidenti": underweight1Accident}, {
-			'name': "Sottopeso II", "Nessun incidente": underweight2, "Incidenti": underweight2Accident}, \
-		          {'name': "Sottopeso III", "Nessun incidente": underweight3, "Incidenti": underweight3Accident}, {
-			          'name': "Normopeso", "Nessun incidente": normalweight, "Incidenti": normalweightAccident}, \
-		          {'name': "Sovrappeso", "Nessun incidente": overweight, "Incidenti": overweightAccident}, {'name': "Obeso",
-		                                                                                       "Nessun incidente": obese,
-		                                                                                       "Incidenti": obeseAccident}
+		content = {'name': "Sottopeso I", "Percentuale incidenti": percentage(underweight1Accident, underweight1)}, {'name': "Sottopeso II", "Percentuale incidenti": percentage(underweight2Accident, underweight2)}, \
+		          {'name': "Sottopeso III", "Percentuale incidenti": percentage(underweight3Accident, underweight3)}, {'name': "Normopeso", "Percentuale incidenti": percentage(normalweightAccident, normalweight)}, \
+		          {'name': "Sovrappeso", "Percentuale incidenti": percentage(overweightAccident, overweight)}, {'name': "Obeso", "Percentuale incidenti": percentage(obeseAccident, obese)},
 
 		return Response(content)
