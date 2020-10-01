@@ -1,3 +1,4 @@
+[![BCH compliance](https://bettercodehub.com/edge/badge/Pinzauti/indagine-edit-api?branch=master)](https://bettercodehub.com/)
 ## Informazioni sul progetto
 Indagine EDIT si pone l'obiettivo di rendere fruibili i dati raccolti dalla regione Toscana in materia di incidenti stradali.
 ## Guida all'utilizzo
